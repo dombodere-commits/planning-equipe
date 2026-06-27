@@ -81,6 +81,19 @@
     }
     .btn-ghost:hover { background: var(--bg); }
 
+    /* Sync indicator */
+    .sync-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all .2s;
+    }
+    .sync-badge.ok   { background: #e8fae8; color: #1a8f1a; }
+    .sync-badge.busy { background: #fff3e0; color: #e65100; }
+    .sync-badge.err  { background: #fdecea; color: #c62828; }
+
     /* ââ Planning table ââ */
     .planning-wrap {
       flex: 1;
@@ -93,7 +106,6 @@
       table-layout: fixed;
     }
 
-    /* Header row: days */
     thead th {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -136,7 +148,6 @@
 
     thead th.today-col { color: var(--accent); }
 
-    /* Person rows */
     tbody tr { height: var(--row-h); }
 
     tbody td {
@@ -148,7 +159,6 @@
 
     tbody td.today-col { background: var(--today-bg); }
 
-    /* Name cell */
     td.name-cell {
       position: sticky;
       left: 0;
@@ -188,7 +198,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Day cells */
     td.day-cell {
       cursor: pointer;
       min-width: 110px;
@@ -196,7 +205,6 @@
     td.day-cell:hover { background: #f0f0f5; }
     td.day-cell.today-col:hover { background: #ddeeff; }
 
-    /* Absence */
     td.day-cell.absent {
       background: repeating-linear-gradient(
         -45deg,
@@ -207,9 +215,7 @@
       ) !important;
       cursor: pointer;
     }
-    td.day-cell.absent:hover {
-      filter: brightness(.96);
-    }
+    td.day-cell.absent:hover { filter: brightness(.96); }
     .absence-label {
       display: flex;
       align-items: center;
@@ -221,7 +227,6 @@
       letter-spacing: .02em;
     }
 
-    /* Events inside cell */
     .cell-events {
       display: flex;
       flex-direction: column;
@@ -250,7 +255,6 @@
       padding: 1px 4px;
     }
 
-    /* Empty state */
     .empty-state {
       display: flex;
       flex-direction: column;
@@ -288,6 +292,7 @@
     }
 
     .modal h2 { font-size: 17px; font-weight: 600; }
+    .modal p  { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
     .field label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
 
@@ -304,8 +309,6 @@
     }
     .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--accent); }
     .modal textarea { resize: vertical; min-height: 52px; }
-
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .color-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .color-swatch {
@@ -331,7 +334,6 @@
       font-size: 14px; margin-right: auto;
     }
 
-    /* People modal */
     .people-list { display: flex; flex-direction: column; gap: 8px; }
     .person-item {
       display: flex; align-items: center; gap: 10px;
@@ -351,9 +353,47 @@
     .add-person-row { display: flex; gap: 8px; }
     .add-person-row input { flex: 1; }
 
-    /* scrollbar */
+    /* Setup modal specifics */
+    .setup-option {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .setup-option:hover { border-color: var(--accent); background: var(--bg); }
+    .setup-option h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .setup-option p  { font-size: 12px; color: var(--muted); }
+
+    .share-box {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 13px;
+      word-break: break-all;
+      color: var(--accent);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .share-box:hover { background: #eef5ff; }
+
     .planning-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
     .planning-wrap::-webkit-scrollbar-thumb { background: #c7c7cc; border-radius: 3px; }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border: 2px solid #e0e0e0;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
@@ -364,12 +404,58 @@
   <div class="week-label" id="weekLabel"></div>
   <button class="nav-btn" id="todayBtn">Cette semaine</button>
   <button class="nav-btn" id="nextWeek">âº</button>
+  <span class="sync-badge ok" id="syncBadge">â En ligne</span>
+  <button class="btn-ghost" id="syncBtn" title="Synchroniser">â³</button>
   <button class="btn-ghost" id="openPeopleBtn">ð¥ Ãquipe</button>
+  <button class="btn-ghost" id="shareBtn">ð Partager</button>
   <button class="btn-primary" id="openAddBtn">+ Ajouter</button>
 </div>
 
 <!-- Planning -->
 <div class="planning-wrap" id="planningWrap"></div>
+
+<!-- ââ Setup modal ââ -->
+<div class="overlay open" id="setupOverlay">
+  <div class="modal" style="width:380px; gap:16px">
+    <h2>ð Planning d'Ã©quipe</h2>
+    <p>Choisissez comment dÃ©marrer :</p>
+
+    <div class="setup-option" id="setupNew">
+      <h3>â¨ CrÃ©er un nouveau planning</h3>
+      <p>GÃ©nÃ¨re un planning partagÃ© que vous pourrez partager avec votre Ã©quipe.</p>
+    </div>
+
+    <div style="text-align:center; color:var(--muted); font-size:12px">â ou â</div>
+
+    <div class="setup-option">
+      <h3>ð Rejoindre un planning existant</h3>
+      <p>Entrez l'identifiant partagÃ© par un collÃ¨gue.</p>
+      <div style="margin-top:10px; display:flex; gap:8px;">
+        <input type="text" id="joinId" placeholder="Identifiant du planningâ¦" style="font-size:13px" />
+        <button class="btn-save" id="setupJoin" style="white-space:nowrap">Rejoindre</button>
+      </div>
+    </div>
+
+    <p id="setupError" style="color:#ff3b30; font-size:12px; display:none"></p>
+  </div>
+</div>
+
+<!-- ââ Share modal ââ -->
+<div class="overlay" id="shareOverlay">
+  <div class="modal" style="width:380px">
+    <h2>ð Partager le planning</h2>
+    <p>Copiez cet identifiant et envoyez-le Ã  vos collÃ¨gues. Ils pourront l'entrer au dÃ©marrage pour accÃ©der au mÃªme planning.</p>
+    <div class="field">
+      <label>Identifiant du planning</label>
+      <div class="share-box" id="shareBinId" title="Cliquer pour copier">â</div>
+    </div>
+    <p style="font-size:11px; color:var(--muted)">Cliquer sur l'identifiant pour le copier.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="closeShareBtn">Fermer</button>
+      <button class="btn-delete" id="resetBtn" style="margin-right:auto; font-size:12px; padding:6px 10px">Changer de planning</button>
+    </div>
+  </div>
+</div>
 
 <!-- ââ Event modal ââ -->
 <div class="overlay" id="evOverlay">
@@ -424,7 +510,40 @@
 </div>
 
 <script>
-// ââ Constants ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ââ JSONBin API âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const API = 'https://api.jsonbin.io/v3';
+const BIN_KEY = 'cal_bin_id_v1';
+
+let binId = localStorage.getItem(BIN_KEY) || null;
+
+async function apiCreateBin() {
+  const res = await fetch(`${API}/b`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Bin-Name': 'planning-equipe', 'X-Bin-Private': 'false' },
+    body: JSON.stringify({ events: [], people: [], absences: [] })
+  });
+  if (!res.ok) throw new Error('CrÃ©ation Ã©chouÃ©e');
+  const data = await res.json();
+  return data.metadata.id;
+}
+
+async function apiRead(id) {
+  const res = await fetch(`${API}/b/${id}/latest`);
+  if (!res.ok) throw new Error('Lecture Ã©chouÃ©e (ID invalide ?)');
+  const data = await res.json();
+  return data.record;
+}
+
+async function apiWrite(id, record) {
+  const res = await fetch(`${API}/b/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(record)
+  });
+  if (!res.ok) throw new Error('Sauvegarde Ã©chouÃ©e');
+}
+
+// ââ Constants âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const PERSON_COLORS = [
   "#007aff","#34c759","#ff9500","#ff2d55","#af52de",
   "#5ac8fa","#a2845e","#30b0c7","#ff3b30","#32ade6"
@@ -441,62 +560,93 @@ const EV_COLORS = [
   { name:"Marron", hex:"#a2845e" },
 ];
 
-const DAYS_FR = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"];
+const DAYS_FR   = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"];
 const MONTHS_FR = ["jan","fÃ©v","mars","avr","mai","juin","juil","aoÃ»t","sep","oct","nov","dÃ©c"];
 
-const STORE_EV  = "cal_events_v3";
-const STORE_PPL = "cal_people_v1";
-const STORE_ABS = "cal_absences_v1";
+// ââ State âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+let events   = [];
+let people   = [];
+let absences = [];
 
-// ââ State ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-let events    = JSON.parse(localStorage.getItem(STORE_EV)  || "[]");
-let people    = JSON.parse(localStorage.getItem(STORE_PPL) || "[]");
-let absences  = JSON.parse(localStorage.getItem(STORE_ABS) || "[]");
-
-// Monday of current week
-let weekStart = getMonday(new Date());
-
+let weekStart     = getMonday(new Date());
 let editingEvId   = null;
 let selectedColor = EV_COLORS[0].hex;
 let prefillDate   = null;
 let prefillPerson = null;
+let _saveTimer    = null;
 
-// ââ Helpers ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ââ Helpers âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2,"0");
 const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
-const saveEv  = () => localStorage.setItem(STORE_EV,  JSON.stringify(events));
-const savePpl = () => localStorage.setItem(STORE_PPL, JSON.stringify(people));
-const saveAbs = () => localStorage.setItem(STORE_ABS, JSON.stringify(absences));
+const initials = name => name.trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
+
+function syncBadge(state, msg) {
+  const el = $("syncBadge");
+  el.className = 'sync-badge ' + state;
+  el.innerHTML = state === 'busy' ? `<span class="spinner"></span>${msg}` : msg;
+}
+
+// ââ Cloud sync ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+async function loadFromCloud() {
+  if (!binId) return;
+  syncBadge('busy', 'Chargementâ¦');
+  try {
+    const rec = await apiRead(binId);
+    events   = rec.events   || [];
+    people   = rec.people   || [];
+    absences = rec.absences || [];
+    syncBadge('ok', 'â En ligne');
+    renderPlanning();
+  } catch(e) {
+    syncBadge('err', 'â Erreur rÃ©seau');
+  }
+}
+
+function scheduleSave() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(pushToCloud, 800);
+}
+
+async function pushToCloud() {
+  if (!binId) return;
+  syncBadge('busy', 'Sauvegardeâ¦');
+  try {
+    await apiWrite(binId, { events, people, absences });
+    syncBadge('ok', 'â SauvegardÃ©');
+  } catch(e) {
+    syncBadge('err', 'â Erreur sauvegarde');
+  }
+}
+
+// Auto-refresh every 30 seconds
+setInterval(loadFromCloud, 30000);
+
+// ââ Data mutations ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function saveAll() { scheduleSave(); }
 
 function toggleAbsence(personId, date) {
   const idx = absences.findIndex(a => a.personId === personId && a.date === date);
   if (idx >= 0) absences.splice(idx, 1);
   else absences.push({ personId, date });
-  saveAbs();
+  saveAll();
   renderPlanning();
 }
 
 function isAbsent(personId, date) {
   return absences.some(a => a.personId === personId && a.date === date);
 }
-const initials = name => name.trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
 
+// ââ Date utils ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function getMonday(d) {
   const dt = new Date(d); dt.setHours(0,0,0,0);
   const day = dt.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  dt.setDate(dt.getDate() + diff);
+  dt.setDate(dt.getDate() + (day === 0 ? -6 : 1 - day));
   return dt;
 }
 
 function dateKey(d) {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-}
-
-function isoToDate(iso) {
-  const [y,m,d] = iso.split("-").map(Number);
-  return new Date(y, m-1, d);
 }
 
 function weekDays(monday) {
@@ -531,16 +681,13 @@ function renderPlanning() {
 
   const days = weekDays(weekStart);
   const todayKey = dateKey(new Date());
-
   const table = document.createElement("table");
 
-  // ââ Header ââ
+  // Header
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
-
   const corner = document.createElement("th");
   corner.className = "corner";
-  corner.textContent = "";
   headRow.appendChild(corner);
 
   days.forEach(d => {
@@ -554,13 +701,12 @@ function renderPlanning() {
   thead.appendChild(headRow);
   table.appendChild(thead);
 
-  // ââ Rows ââ
+  // Body
   const tbody = document.createElement("tbody");
 
   people.forEach(person => {
     const tr = document.createElement("tr");
 
-    // Name cell
     const td_name = document.createElement("td");
     td_name.className = "name-cell";
     td_name.innerHTML = `<div class="person-badge">
@@ -569,7 +715,6 @@ function renderPlanning() {
     </div>`;
     tr.appendChild(td_name);
 
-    // Day cells
     days.forEach(d => {
       const key = dateKey(d);
       const td = document.createElement("td");
@@ -582,7 +727,6 @@ function renderPlanning() {
       const container = document.createElement("div");
       container.className = "cell-events";
 
-      // Absence label
       if (absent) {
         const lbl = document.createElement("div");
         lbl.className = "absence-label";
@@ -610,7 +754,6 @@ function renderPlanning() {
 
       td.appendChild(container);
 
-      // Click = toggle absence
       td.addEventListener("click", e => {
         if (e.target.closest(".ev-chip")) return;
         toggleAbsence(person.id, key);
@@ -627,15 +770,12 @@ function renderPlanning() {
 }
 
 // ââ Navigation ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-$("prevWeek").onclick  = () => { weekStart.setDate(weekStart.getDate()-7); renderPlanning(); };
-$("nextWeek").onclick  = () => { weekStart.setDate(weekStart.getDate()+7); renderPlanning(); };
-$("todayBtn").onclick  = () => { weekStart = getMonday(new Date()); renderPlanning(); };
+$("prevWeek").onclick = () => { weekStart.setDate(weekStart.getDate()-7); renderPlanning(); };
+$("nextWeek").onclick = () => { weekStart.setDate(weekStart.getDate()+7); renderPlanning(); };
+$("todayBtn").onclick = () => { weekStart = getMonday(new Date()); renderPlanning(); };
+$("syncBtn").onclick  = () => loadFromCloud();
 
 // ââ Event modal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-const EV_COLOR_LIST = [
-  "#007aff","#34c759","#ff9500","#ff2d55","#af52de","#ff3b30","#5ac8fa","#a2845e"
-];
-
 function buildColorSwatches() {
   const row = $("colorRow"); row.innerHTML = "";
   EV_COLORS.forEach(c => {
@@ -684,7 +824,7 @@ function openEvModal(ev, forceDate) {
     del.className = "btn-delete"; del.textContent = "Supprimer";
     del.onclick = () => {
       events = events.filter(e => e.id !== editingEvId);
-      saveEv(); closeEvModal(); renderPlanning();
+      saveAll(); closeEvModal(); renderPlanning();
     };
     actions.prepend(del);
   }
@@ -719,7 +859,7 @@ $("evSave").onclick = () => {
   } else {
     events.push(ev);
   }
-  saveEv(); closeEvModal(); renderPlanning();
+  saveAll(); closeEvModal(); renderPlanning();
 };
 
 $("evTitle").addEventListener("keydown", e => { if (e.key === "Enter") $("evSave").click(); });
@@ -740,7 +880,7 @@ function renderPeopleList() {
       <button class="person-remove" data-id="${p.id}">Ã</button>`;
     item.querySelector(".person-remove").onclick = () => {
       people = people.filter(x => x.id !== p.id);
-      savePpl(); renderPeopleList(); renderPlanning();
+      saveAll(); renderPeopleList(); renderPlanning();
     };
     list.appendChild(item);
   });
@@ -762,14 +902,84 @@ function addPerson() {
   if (!name) return;
   const color = PERSON_COLORS[people.length % PERSON_COLORS.length];
   people.push({ id: uid(), name, color });
-  savePpl(); $("newPersonName").value = "";
+  saveAll(); $("newPersonName").value = "";
   renderPeopleList(); renderPlanning();
 }
 
 $("addPersonBtn").onclick = addPerson;
 $("newPersonName").addEventListener("keydown", e => { if (e.key === "Enter") addPerson(); });
 
-// ââ Init ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ââ Share modal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+$("shareBtn").onclick = () => {
+  $("shareBinId").textContent = binId || 'â';
+  $("shareOverlay").classList.add("open");
+};
+$("closeShareBtn").onclick = () => $("shareOverlay").classList.remove("open");
+$("shareOverlay").onclick  = e => { if (e.target === $("shareOverlay")) $("shareOverlay").classList.remove("open"); };
+
+$("shareBinId").onclick = () => {
+  navigator.clipboard.writeText(binId || '').then(() => {
+    $("shareBinId").textContent = 'â CopiÃ© !';
+    setTimeout(() => { $("shareBinId").textContent = binId; }, 1500);
+  });
+};
+
+$("resetBtn").onclick = () => {
+  if (confirm("Changer de planning ? Les donnÃ©es actuelles resteront sur le serveur.")) {
+    localStorage.removeItem('cal_bin_id_v1');
+    location.reload();
+  }
+};
+
+// ââ Setup modal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+$("setupNew").onclick = async () => {
+  $("setupError").style.display = "none";
+  $("setupNew").innerHTML = '<h3><span class="spinner"></span> CrÃ©ation en coursâ¦</h3>';
+  try {
+    const id = await apiCreateBin();
+    binId = id;
+    localStorage.setItem(BIN_KEY, id);
+    $("setupOverlay").classList.remove("open");
+    syncBadge('ok', 'â En ligne');
+    renderPlanning();
+  } catch(e) {
+    $("setupNew").innerHTML = '<h3>â¨ CrÃ©er un nouveau planning</h3><p>GÃ©nÃ¨re un planning partagÃ© que vous pourrez partager avec votre Ã©quipe.</p>';
+    $("setupError").textContent = "Erreur : " + e.message;
+    $("setupError").style.display = "block";
+  }
+};
+
+$("setupJoin").onclick = async () => {
+  const id = $("joinId").value.trim();
+  if (!id) { $("joinId").focus(); return; }
+  $("setupError").style.display = "none";
+  $("setupJoin").textContent = "â¦";
+  try {
+    const rec = await apiRead(id);
+    binId = id;
+    localStorage.setItem(BIN_KEY, id);
+    events   = rec.events   || [];
+    people   = rec.people   || [];
+    absences = rec.absences || [];
+    $("setupOverlay").classList.remove("open");
+    syncBadge('ok', 'â En ligne');
+    renderPlanning();
+  } catch(e) {
+    $("setupJoin").textContent = "Rejoindre";
+    $("setupError").textContent = "Identifiant invalide ou introuvable.";
+    $("setupError").style.display = "block";
+  }
+};
+
+$("joinId").addEventListener("keydown", e => { if (e.key === "Enter") $("setupJoin").click(); });
+
+// ââ Init âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+if (binId) {
+  $("setupOverlay").classList.remove("open");
+  loadFromCloud();
+} else {
+  syncBadge('err', 'Non connectÃ©');
+}
 renderPlanning();
 </script>
 </body>
