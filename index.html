@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planning Ãquipe</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --surface: #fff;
+      --border: #e0e0e0;
+      --text: #1c1c1e;
+      --muted: #8e8e93;
+      --accent: #007aff;
+      --today-bg: #e8f2ff;
+      --row-h: 90px;
+      --name-w: 140px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ââ Top bar ââ */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .nav-btn:hover { background: var(--bg); }
+
+    .week-label {
+      font-size: 17px;
+      font-weight: 600;
+      flex: 1;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .btn-primary:hover { opacity: .85; }
+
+    .btn-ghost {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .btn-ghost:hover { background: var(--bg); }
+
+    /* ââ Planning table ââ */
+    .planning-wrap {
+      flex: 1;
+      overflow: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 100%;
+      table-layout: fixed;
+    }
+
+    /* Header row: days */
+    thead th {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 6px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      white-space: nowrap;
+    }
+
+    thead th.corner {
+      width: var(--name-w);
+      min-width: var(--name-w);
+      background: var(--surface);
+      left: 0;
+      z-index: 20;
+    }
+
+    thead th .day-num {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+      line-height: 1;
+    }
+
+    thead th.today-col .day-num {
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      margin: 0 auto 2px;
+    }
+
+    thead th.today-col { color: var(--accent); }
+
+    /* Person rows */
+    tbody tr { height: var(--row-h); }
+
+    tbody td {
+      border: 1px solid var(--border);
+      vertical-align: top;
+      padding: 4px;
+      background: var(--surface);
+    }
+
+    tbody td.today-col { background: var(--today-bg); }
+
+    /* Name cell */
+    td.name-cell {
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      background: var(--surface) !important;
+      border-right: 2px solid var(--border);
+      vertical-align: middle;
+      padding: 8px 12px;
+      width: var(--name-w);
+      min-width: var(--name-w);
+    }
+
+    .person-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .person-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Day cells */
+    td.day-cell {
+      cursor: pointer;
+      min-width: 110px;
+    }
+    td.day-cell:hover { background: #f0f0f5; }
+    td.day-cell.today-col:hover { background: #ddeeff; }
+
+    /* Absence */
+    td.day-cell.absent {
+      background: repeating-linear-gradient(
+        -45deg,
+        #f0f0f0,
+        #f0f0f0 5px,
+        #e4e4e4 5px,
+        #e4e4e4 10px
+      ) !important;
+      cursor: pointer;
+    }
+    td.day-cell.absent:hover {
+      filter: brightness(.96);
+    }
+    .absence-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      padding: 2px 4px;
+      letter-spacing: .02em;
+    }
+
+    /* Events inside cell */
+    .cell-events {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .ev-chip {
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .ev-chip:hover { opacity: .85; }
+
+    .ev-more {
+      font-size: 11px;
+      color: var(--muted);
+      padding: 1px 4px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 60px 20px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* ââ Overlays ââ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 22px;
+      width: 340px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal h2 { font-size: 17px; font-weight: 600; }
+
+    .field label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+
+    .modal input, .modal select, .modal textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+    }
+    .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--accent); }
+    .modal textarea { resize: vertical; min-height: 52px; }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .color-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .color-swatch {
+      width: 26px; height: 26px; border-radius: 50%;
+      cursor: pointer; border: 3px solid transparent; transition: transform .1s;
+    }
+    .color-swatch.active { border-color: #1c1c1e; transform: scale(1.15); }
+
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 2px; }
+
+    .btn-cancel {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 14px;
+    }
+    .btn-save {
+      background: var(--accent); color: white; border: none;
+      border-radius: 8px; padding: 8px 16px; cursor: pointer;
+      font-size: 14px; font-weight: 500;
+    }
+    .btn-delete {
+      background: #ff3b30; color: white; border: none;
+      border-radius: 8px; padding: 8px 14px; cursor: pointer;
+      font-size: 14px; margin-right: auto;
+    }
+
+    /* People modal */
+    .people-list { display: flex; flex-direction: column; gap: 8px; }
+    .person-item {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg); border-radius: 8px; padding: 8px 10px;
+    }
+    .person-item-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .person-item-name { flex: 1; font-size: 14px; font-weight: 500; }
+    .person-remove {
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: 20px; line-height: 1; padding: 0 4px;
+    }
+    .person-remove:hover { color: #ff3b30; }
+    .add-person-row { display: flex; gap: 8px; }
+    .add-person-row input { flex: 1; }
+
+    /* scrollbar */
+    .planning-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+    .planning-wrap::-webkit-scrollbar-thumb { background: #c7c7cc; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <button class="nav-btn" id="prevWeek">â¹</button>
+  <div class="week-label" id="weekLabel"></div>
+  <button class="nav-btn" id="todayBtn">Cette semaine</button>
+  <button class="nav-btn" id="nextWeek">âº</button>
+  <button class="btn-ghost" id="openPeopleBtn">ð¥ Ãquipe</button>
+  <button class="btn-primary" id="openAddBtn">+ Ajouter</button>
+</div>
+
+<!-- Planning -->
+<div class="planning-wrap" id="planningWrap"></div>
+
+<!-- ââ Event modal ââ -->
+<div class="overlay" id="evOverlay">
+  <div class="modal">
+    <h2 id="evModalTitle">Nouvel Ã©vÃ©nement</h2>
+
+    <div class="field">
+      <label>Titre</label>
+      <input type="text" id="evTitle" placeholder="RÃ©union, tÃ¢cheâ¦" />
+    </div>
+
+    <div class="field">
+      <label>Personne</label>
+      <select id="evPerson"></select>
+    </div>
+
+    <div class="field">
+      <label>Date</label>
+      <input type="date" id="evDate" />
+    </div>
+
+    <div class="field">
+      <label>Description</label>
+      <textarea id="evDesc" placeholder="DÃ©tailsâ¦"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Couleur</label>
+      <div class="color-row" id="colorRow"></div>
+    </div>
+
+    <div class="modal-actions" id="evActions">
+      <button class="btn-cancel" id="evCancel">Annuler</button>
+      <button class="btn-save" id="evSave">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ââ People modal ââ -->
+<div class="overlay" id="peopleOverlay">
+  <div class="modal" style="width:360px">
+    <h2>GÃ©rer l'Ã©quipe</h2>
+    <div class="people-list" id="peopleList"></div>
+    <div class="add-person-row">
+      <input type="text" id="newPersonName" placeholder="Nom du membreâ¦" maxlength="30" />
+      <button class="btn-save" id="addPersonBtn">Ajouter</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-save" id="closePeopleBtn">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ââ Constants ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const PERSON_COLORS = [
+  "#007aff","#34c759","#ff9500","#ff2d55","#af52de",
+  "#5ac8fa","#a2845e","#30b0c7","#ff3b30","#32ade6"
+];
+
+const EV_COLORS = [
+  { name:"Bleu",   hex:"#007aff" },
+  { name:"Vert",   hex:"#34c759" },
+  { name:"Orange", hex:"#ff9500" },
+  { name:"Rose",   hex:"#ff2d55" },
+  { name:"Violet", hex:"#af52de" },
+  { name:"Rouge",  hex:"#ff3b30" },
+  { name:"Cyan",   hex:"#5ac8fa" },
+  { name:"Marron", hex:"#a2845e" },
+];
+
+const DAYS_FR = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"];
+const MONTHS_FR = ["jan","fÃ©v","mars","avr","mai","juin","juil","aoÃ»t","sep","oct","nov","dÃ©c"];
+
+const STORE_EV  = "cal_events_v3";
+const STORE_PPL = "cal_people_v1";
+const STORE_ABS = "cal_absences_v1";
+
+// ââ State ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+let events    = JSON.parse(localStorage.getItem(STORE_EV)  || "[]");
+let people    = JSON.parse(localStorage.getItem(STORE_PPL) || "[]");
+let absences  = JSON.parse(localStorage.getItem(STORE_ABS) || "[]");
+
+// Monday of current week
+let weekStart = getMonday(new Date());
+
+let editingEvId   = null;
+let selectedColor = EV_COLORS[0].hex;
+let prefillDate   = null;
+let prefillPerson = null;
+
+// ââ Helpers ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,"0");
+const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+const saveEv  = () => localStorage.setItem(STORE_EV,  JSON.stringify(events));
+const savePpl = () => localStorage.setItem(STORE_PPL, JSON.stringify(people));
+const saveAbs = () => localStorage.setItem(STORE_ABS, JSON.stringify(absences));
+
+function toggleAbsence(personId, date) {
+  const idx = absences.findIndex(a => a.personId === personId && a.date === date);
+  if (idx >= 0) absences.splice(idx, 1);
+  else absences.push({ personId, date });
+  saveAbs();
+  renderPlanning();
+}
+
+function isAbsent(personId, date) {
+  return absences.some(a => a.personId === personId && a.date === date);
+}
+const initials = name => name.trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
+
+function getMonday(d) {
+  const dt = new Date(d); dt.setHours(0,0,0,0);
+  const day = dt.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  dt.setDate(dt.getDate() + diff);
+  return dt;
+}
+
+function dateKey(d) {
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+function isoToDate(iso) {
+  const [y,m,d] = iso.split("-").map(Number);
+  return new Date(y, m-1, d);
+}
+
+function weekDays(monday) {
+  return Array.from({length:7}, (_,i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+}
+
+function weekLabel(monday) {
+  const days = weekDays(monday);
+  const d0 = days[0], d6 = days[6];
+  if (d0.getMonth() === d6.getMonth())
+    return `${d0.getDate()} â ${d6.getDate()} ${MONTHS_FR[d0.getMonth()]} ${d0.getFullYear()}`;
+  return `${d0.getDate()} ${MONTHS_FR[d0.getMonth()]} â ${d6.getDate()} ${MONTHS_FR[d6.getMonth()]} ${d6.getFullYear()}`;
+}
+
+// ââ Render planning âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderPlanning() {
+  $("weekLabel").textContent = weekLabel(weekStart);
+  const wrap = $("planningWrap");
+  wrap.innerHTML = "";
+
+  if (people.length === 0) {
+    wrap.innerHTML = `<div class="empty-state">
+      <span style="font-size:40px">ð¥</span>
+      <span>Ajoutez des membres via le bouton <strong>Ãquipe</strong></span>
+    </div>`;
+    return;
+  }
+
+  const days = weekDays(weekStart);
+  const todayKey = dateKey(new Date());
+
+  const table = document.createElement("table");
+
+  // ââ Header ââ
+  const thead = document.createElement("thead");
+  const headRow = document.createElement("tr");
+
+  const corner = document.createElement("th");
+  corner.className = "corner";
+  corner.textContent = "";
+  headRow.appendChild(corner);
+
+  days.forEach(d => {
+    const th = document.createElement("th");
+    const key = dateKey(d);
+    if (key === todayKey) th.className = "today-col";
+    th.innerHTML = `<span class="day-num">${d.getDate()}</span>${DAYS_FR[d.getDay()]}`;
+    headRow.appendChild(th);
+  });
+
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  // ââ Rows ââ
+  const tbody = document.createElement("tbody");
+
+  people.forEach(person => {
+    const tr = document.createElement("tr");
+
+    // Name cell
+    const td_name = document.createElement("td");
+    td_name.className = "name-cell";
+    td_name.innerHTML = `<div class="person-badge">
+      <div class="avatar" style="background:${person.color}">${initials(person.name)}</div>
+      <div class="person-name">${person.name}</div>
+    </div>`;
+    tr.appendChild(td_name);
+
+    // Day cells
+    days.forEach(d => {
+      const key = dateKey(d);
+      const td = document.createElement("td");
+      td.className = "day-cell" + (key === todayKey ? " today-col" : "");
+
+      const absent = isAbsent(person.id, key);
+      if (absent) td.classList.add("absent");
+
+      const dayEvs = events.filter(ev => ev.date === key && ev.personId === person.id);
+      const container = document.createElement("div");
+      container.className = "cell-events";
+
+      // Absence label
+      if (absent) {
+        const lbl = document.createElement("div");
+        lbl.className = "absence-label";
+        lbl.textContent = "â Absent";
+        container.appendChild(lbl);
+      }
+
+      const MAX_SHOW = absent ? 2 : 3;
+      dayEvs.slice(0, MAX_SHOW).forEach(ev => {
+        const chip = document.createElement("div");
+        chip.className = "ev-chip";
+        chip.style.background = ev.color;
+        chip.title = ev.title;
+        chip.textContent = ev.title;
+        chip.onclick = e => { e.stopPropagation(); openEvModal(ev); };
+        container.appendChild(chip);
+      });
+
+      if (dayEvs.length > MAX_SHOW) {
+        const more = document.createElement("div");
+        more.className = "ev-more";
+        more.textContent = `+${dayEvs.length - MAX_SHOW} autre${dayEvs.length - MAX_SHOW > 1 ? "s" : ""}`;
+        container.appendChild(more);
+      }
+
+      td.appendChild(container);
+
+      // Click = toggle absence
+      td.addEventListener("click", e => {
+        if (e.target.closest(".ev-chip")) return;
+        toggleAbsence(person.id, key);
+      });
+
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+}
+
+// ââ Navigation ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+$("prevWeek").onclick  = () => { weekStart.setDate(weekStart.getDate()-7); renderPlanning(); };
+$("nextWeek").onclick  = () => { weekStart.setDate(weekStart.getDate()+7); renderPlanning(); };
+$("todayBtn").onclick  = () => { weekStart = getMonday(new Date()); renderPlanning(); };
+
+// ââ Event modal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const EV_COLOR_LIST = [
+  "#007aff","#34c759","#ff9500","#ff2d55","#af52de","#ff3b30","#5ac8fa","#a2845e"
+];
+
+function buildColorSwatches() {
+  const row = $("colorRow"); row.innerHTML = "";
+  EV_COLORS.forEach(c => {
+    const sw = document.createElement("div");
+    sw.className = "color-swatch" + (c.hex === selectedColor ? " active" : "");
+    sw.style.background = c.hex; sw.title = c.name;
+    sw.onclick = () => {
+      selectedColor = c.hex;
+      row.querySelectorAll(".color-swatch").forEach(s => s.classList.remove("active"));
+      sw.classList.add("active");
+    };
+    row.appendChild(sw);
+  });
+}
+
+function populatePersonSelect(selected) {
+  const sel = $("evPerson"); sel.innerHTML = "";
+  people.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.id; opt.textContent = p.name;
+    if (p.id === selected) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function openEvModal(ev, forceDate) {
+  if (people.length === 0) { openPeopleModal(); return; }
+  editingEvId = ev ? ev.id : null;
+  $("evModalTitle").textContent = ev ? "Modifier" : "Nouvel Ã©vÃ©nement";
+  $("evTitle").value = ev ? ev.title   : "";
+  $("evDesc").value  = ev ? (ev.desc||"") : "";
+  selectedColor = ev ? ev.color : EV_COLORS[0].hex;
+
+  const dateVal = ev ? ev.date : (prefillDate || forceDate || dateKey(new Date()));
+  $("evDate").value = dateVal;
+
+  const personSel = ev ? ev.personId : (prefillPerson || people[0]?.id);
+  populatePersonSelect(personSel);
+
+  buildColorSwatches();
+
+  const actions = $("evActions");
+  actions.querySelector(".btn-delete")?.remove();
+  if (ev) {
+    const del = document.createElement("button");
+    del.className = "btn-delete"; del.textContent = "Supprimer";
+    del.onclick = () => {
+      events = events.filter(e => e.id !== editingEvId);
+      saveEv(); closeEvModal(); renderPlanning();
+    };
+    actions.prepend(del);
+  }
+
+  $("evOverlay").classList.add("open");
+  setTimeout(() => $("evTitle").focus(), 50);
+}
+
+function closeEvModal() {
+  $("evOverlay").classList.remove("open");
+  editingEvId = null; prefillDate = null; prefillPerson = null;
+}
+
+$("openAddBtn").onclick = () => openEvModal(null);
+$("evCancel").onclick   = closeEvModal;
+$("evOverlay").onclick  = e => { if (e.target === $("evOverlay")) closeEvModal(); };
+
+$("evSave").onclick = () => {
+  const title = $("evTitle").value.trim();
+  if (!title) { $("evTitle").focus(); return; }
+  const ev = {
+    id:       editingEvId || uid(),
+    date:     $("evDate").value,
+    personId: $("evPerson").value,
+    title,
+    desc:     $("evDesc").value.trim(),
+    color:    selectedColor,
+  };
+  if (editingEvId) {
+    const idx = events.findIndex(e => e.id === editingEvId);
+    if (idx >= 0) events[idx] = ev; else events.push(ev);
+  } else {
+    events.push(ev);
+  }
+  saveEv(); closeEvModal(); renderPlanning();
+};
+
+$("evTitle").addEventListener("keydown", e => { if (e.key === "Enter") $("evSave").click(); });
+
+// ââ People modal ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderPeopleList() {
+  const list = $("peopleList"); list.innerHTML = "";
+  if (people.length === 0) {
+    list.innerHTML = `<div style="color:var(--muted);font-size:13px;text-align:center;padding:8px">Aucun membre pour l'instant</div>`;
+    return;
+  }
+  people.forEach(p => {
+    const item = document.createElement("div");
+    item.className = "person-item";
+    item.innerHTML = `
+      <div class="person-item-avatar" style="background:${p.color}">${initials(p.name)}</div>
+      <div class="person-item-name">${p.name}</div>
+      <button class="person-remove" data-id="${p.id}">Ã</button>`;
+    item.querySelector(".person-remove").onclick = () => {
+      people = people.filter(x => x.id !== p.id);
+      savePpl(); renderPeopleList(); renderPlanning();
+    };
+    list.appendChild(item);
+  });
+}
+
+function openPeopleModal() {
+  renderPeopleList();
+  $("newPersonName").value = "";
+  $("peopleOverlay").classList.add("open");
+  setTimeout(() => $("newPersonName").focus(), 50);
+}
+
+$("openPeopleBtn").onclick  = openPeopleModal;
+$("closePeopleBtn").onclick = () => $("peopleOverlay").classList.remove("open");
+$("peopleOverlay").onclick  = e => { if (e.target === $("peopleOverlay")) $("peopleOverlay").classList.remove("open"); };
+
+function addPerson() {
+  const name = $("newPersonName").value.trim();
+  if (!name) return;
+  const color = PERSON_COLORS[people.length % PERSON_COLORS.length];
+  people.push({ id: uid(), name, color });
+  savePpl(); $("newPersonName").value = "";
+  renderPeopleList(); renderPlanning();
+}
+
+$("addPersonBtn").onclick = addPerson;
+$("newPersonName").addEventListener("keydown", e => { if (e.key === "Enter") addPerson(); });
+
+// ââ Init ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+renderPlanning();
+</script>
+</body>
+</html>
