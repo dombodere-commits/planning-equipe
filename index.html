@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Planning Ãquipe</title>
+  <title>Planning &#201;quipe</title>
   <style>
     :root {
       --bg: #f5f5f7;
@@ -29,7 +29,7 @@
       overflow: hidden;
     }
 
-    /* ââ Top bar ââ */
+    /* &#9472;&#9472; Top bar &#9472;&#9472; */
     .topbar {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -94,7 +94,7 @@
     .sync-badge.busy { background: #fff3e0; color: #e65100; }
     .sync-badge.err  { background: #fdecea; color: #c62828; }
 
-    /* ââ Planning table ââ */
+    /* &#9472;&#9472; Planning table &#9472;&#9472; */
     .planning-wrap {
       flex: 1;
       overflow: auto;
@@ -203,7 +203,7 @@
       min-width: 110px;
     }
     td.day-cell:hover { background: #f0f0f5; }
-    td.day-cell.today-col:hover { background: #ddeeff; }
+  2 td.day-cell.today-col:hover { background: #ddeeff; }
 
     td.day-cell.absent {
       background: repeating-linear-gradient(
@@ -266,7 +266,7 @@
       font-size: 15px;
     }
 
-    /* ââ Overlays ââ */
+    /* &#9472;&#9472; Overlays &#9472;&#9472; */
     .overlay {
       display: none;
       position: fixed;
@@ -400,48 +400,48 @@
 
 <!-- Top bar -->
 <div class="topbar">
-  <button class="nav-btn" id="prevWeek">â¹</button>
+  <button class="nav-btn" id="prevWeek">&#8249;</button>
   <div class="week-label" id="weekLabel"></div>
   <button class="nav-btn" id="todayBtn">Cette semaine</button>
-  <button class="nav-btn" id="nextWeek">âº</button>
-  <span class="sync-badge ok" id="syncBadge">â En ligne</span>
-  <button class="btn-ghost" id="syncBtn" title="Synchroniser">â³</button>
-  <button class="btn-ghost" id="openPeopleBtn">ð¥ Ãquipe</button>
-  <button class="btn-ghost" id="shareBtn">ð Partager</button>
+  <button class="nav-btn" id="nextWeek">&#8250;</button>
+  <span class="sync-badge ok" id="syncBadge">&#10003; En ligne</span>
+  <button class="btn-ghost" id="syncBtn" title="Synchroniser">&#10227;</button>
+  <button class="btn-ghost" id="openPeopleBtn">&#128101; &#201;quipe</button>
+  <button class="btn-ghost" id="shareBtn">&#128279; Partager</button>
   <button class="btn-primary" id="openAddBtn">+ Ajouter</button>
 </div>
 
 <!-- Planning -->
 <div class="planning-wrap" id="planningWrap"></div>
 
-<!-- ââ Setup modal ââ -->
+<!-- &#9472;&#9472; Setup modal &#9472;&#9472; -->
 <div class="overlay open" id="setupOverlay">
   <div class="modal" style="width:400px; gap:16px">
-    <h2>ð Planning d'Ã©quipe</h2>
+    <h2>&#128467; Planning d'&#233;quipe</h2>
 
     <div style="background:#fffbe6; border:1px solid #ffe066; border-radius:8px; padding:12px; font-size:12px; color:#7a6200; line-height:1.6">
-      <strong>ClÃ© API JSONBin requise</strong><br>
-      CrÃ©ez un compte gratuit sur <a href="https://jsonbin.io" target="_blank" style="color:var(--accent)">jsonbin.io</a>,
-      puis copiez votre <em>Master Key</em> depuis le tableau de bord â API Keys.
+      <strong>Cl&#233; API JSONBin requise</strong><br>
+      Cr&#233;ez un compte gratuit sur <a href="https://jsonbin.io" target="_blank" style="color:var(--accent)">jsonbin.io</a>,
+      puis copiez votre <em>Master Key</em> depuis le tableau de bord &#8594; API Keys.
     </div>
 
     <div class="field">
-      <label>Votre clÃ© API JSONBin (Master Key)</label>
-      <input type="password" id="setupApiKey" placeholder="$2a$10$â¦" style="font-family:monospace;font-size:12px" />
+      <label>Votre cl&#233; API JSONBin (Master Key)</label>
+      <input type="password" id="setupApiKey" placeholder="$2a$10$&#8230;" style="font-family:monospace;font-size:12px" />
     </div>
 
     <div class="setup-option" id="setupNew">
-      <h3>â¨ CrÃ©er un nouveau planning</h3>
-      <p>GÃ©nÃ¨re un planning partagÃ©. Vous obtiendrez un identifiant Ã  partager avec l'Ã©quipe.</p>
+      <h3>&#10024; Cr&#233;er un nouveau planning</h3>
+      <p>G&#233;n&#232;re un planning partag&#233;. Vous obtiendrez un identifiant &#224; partager avec l'&#233;quipe.</p>
     </div>
 
-    <div style="text-align:center; color:var(--muted); font-size:12px">â ou â</div>
+    <div style="text-align:center; color:var(--muted); font-size:12px">&#8212; ou &#8212;</div>
 
     <div class="setup-option">
-      <h3>ð Rejoindre un planning existant</h3>
-      <p>Entrez l'identifiant partagÃ© par un collÃ¨gue.</p>
+      <h3>&#128279; Rejoindre un planning existant</h3>
+      <p>Entrez l'identifiant partag&#233; par un coll&#232;gue.</p>
       <div style="margin-top:10px; display:flex; gap:8px;">
-        <input type="text" id="joinId" placeholder="Identifiant du planningâ¦" style="font-size:13px" />
+        <input type="text" id="joinId" placeholder="Identifiant du planning&#8230;" style="font-size:13px" />
         <button class="btn-save" id="setupJoin" style="white-space:nowrap">Rejoindre</button>
       </div>
     </div>
@@ -450,14 +450,14 @@
   </div>
 </div>
 
-<!-- ââ Share modal ââ -->
+<!-- &#9472;&#9472; Share modal &#9472;&#9472; -->
 <div class="overlay" id="shareOverlay">
   <div class="modal" style="width:380px">
-    <h2>ð Partager le planning</h2>
-    <p>Copiez cet identifiant et envoyez-le Ã  vos collÃ¨gues. Ils pourront l'entrer au dÃ©marrage pour accÃ©der au mÃªme planning.</p>
+    <h2>&#128279; Partager le planning</h2>
+    <p>Copiez cet identifiant et envoyez-le &#224; vos coll&#232;gues. Ils pourront l'entrer au d&#233;marrage pour acc&#233;der au m&#234;me planning.</p>
     <div class="field">
       <label>Identifiant du planning</label>
-      <div class="share-box" id="shareBinId" title="Cliquer pour copier">â</div>
+      <div class="share-box" id="shareBinId" title="Cliquer pour copier">&#8212;</div>
     </div>
     <p style="font-size:11px; color:var(--muted)">Cliquer sur l'identifiant pour le copier.</p>
     <div class="modal-actions">
@@ -467,14 +467,14 @@
   </div>
 </div>
 
-<!-- ââ Event modal ââ -->
+<!-- &#9472;&#9472; Event modal &#9472;&#9472; -->
 <div class="overlay" id="evOverlay">
   <div class="modal">
-    <h2 id="evModalTitle">Nouvel Ã©vÃ©nement</h2>
+    <h2 id="evModalTitle">Nouvel &#233;v&#233;nement</h2>
 
     <div class="field">
       <label>Titre</label>
-      <input type="text" id="evTitle" placeholder="RÃ©union, tÃ¢cheâ¦" />
+      <input type="text" id="evTitle" placeholder="R&#233;union, t&#226;che&#8230;" />
     </div>
 
     <div class="field">
@@ -489,7 +489,7 @@
 
     <div class="field">
       <label>Description</label>
-      <textarea id="evDesc" placeholder="DÃ©tailsâ¦"></textarea>
+      <textarea id="evDesc" placeholder="D&#233;tails&#8230;"></textarea>
     </div>
 
     <div class="field">
@@ -504,13 +504,13 @@
   </div>
 </div>
 
-<!-- ââ People modal ââ -->
+<!-- &#9472;&#9472; People modal &#9472;&#9472; -->
 <div class="overlay" id="peopleOverlay">
   <div class="modal" style="width:360px">
-    <h2>GÃ©rer l'Ã©quipe</h2>
+    <h2>G&#233;rer l'&#233;quipe</h2>
     <div class="people-list" id="peopleList"></div>
     <div class="add-person-row">
-      <input type="text" id="newPersonName" placeholder="Nom du membreâ¦" maxlength="30" />
+      <input type="text" id="newPersonName" placeholder="Nom du membre&#8230;" maxlength="30" />
       <button class="btn-save" id="addPersonBtn">Ajouter</button>
     </div>
     <div class="modal-actions">
@@ -520,7 +520,7 @@
 </div>
 
 <script>
-// ââ JSONBin API âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; JSONBin API &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 const API = 'https://api.jsonbin.io/v3';
 const BIN_KEY     = 'cal_bin_id_v1';
 const BIN_API_KEY = 'cal_bin_apikey_v1';
@@ -550,77 +550,262 @@ async function apiCreateBin() {
 
 async function apiRead(id) {
   const res = await fetch(`${API}/b/${id}/latest`, { headers: authHeaders() });
-  if (!res.ok) throw new Error('Lecture Ã©chouÃ©e (ID invalide ?)');
+  if (!res.ok) throw new Error('Lecture &#233;chou&#233;e (ID invalide ?)');
   const data = await res.json();
   return data.record;
 }
 
-async function apiWrite(id, record) {
-  const res = await fetch(`${API}/b/${id}`, {
-    method: 'PUT',
-    headers: authHeaders(),
-    body: JSON.stringify(record)
-  });
-  if (!res.ok) throw new Error('Sauvegarde Ã©chouÃ©e');
+async func[Û\UÜ]JYXÛÜ
+HÂÛÛÝ\ÈH]ØZ]]Ú
+	ÐT_KØÉÚYXÂY]Ù	ÔU	ËXY\Î]]XY\Ê
+KÙNÓÓÝ[ÚYJXÛÜ
+BJNÂY
+\\ËÚÊHÝÈ]È\Ü	ÔØ]]YØ\H	ÌÌÎØÚÝIÌÌÎÙIÊNÂBËÈ	ÎM
+ÌÉÎM
+ÌÈÛÛÝ[È	ÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÂÛÛÝTÓÓÐÓÓÔÈHÂÌ
+ØYÌÍÍÍNHÙMLÙ
+MHØYLHÍXXÎHØL
+
+YHÌÌÍÈÙØÌÌÌYMNÂÛÛÝUÐÓÓÔÈHÂÈ[YN]H^Ì
+ØYKÈ[YN\^ÌÍÍÍNHKÈ[YNÜ[ÙH^ÙMLKÈ[YNÜÙH^Ù
+MHKÈ[YN[Û]^ØYLHKÈ[YNÝYÙH^ÙØÌKÈ[YNÞX[^ÍXXÎHKÈ[YNX\Û^ØL
+
+YHKNÂÛÛÝVT×ÑHÈ[H[X\Y\]H[Ø[HNÂÛÛÝSÓ×ÑHÈ[ÌÌÎÝX\È]XZHZ[Z[[ÉÌLNÝÙ\ØÝÝ	ÌÌÎØÈNÂËÈ	ÎM
+ÌÉÎM
+ÌÈÝ]H	ÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÂ]][ÈH×NÂ][ÜHH×NÂ]XÙ[Ù\ÈH×NÂ]ÙYZÔÝ\HÙ][Û^J]È]J
+JNÂ]Y][Ñ]YH[Â]Ù[XÝYÛÛÜHUÐÓÓÔÖÌK^Â]Y[]HH[Â]Y[\ÛÛH[Â]ÜØ]U[Y\H[ÂËÈ	ÎM
+ÌÉÎM
+ÌÈ[\È	ÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÉÎM
+ÌÂÛÛÝ	HYOØÝ[Y[Ù][[Y[RY
+Y
+NÂÛÛÝYHOÝ[ÊKYÝ\
+NÂÛÛÝZYH
+
+HOX][ÛJ
+KÔÝ[ÊÍKÛXÙJH
+È]KÝÊ
+KÔÝ[ÊÍNÂÛÛÝ[]X[ÈH[YHO[YK[J
+KÜ]
+×ÊËÊKX\
+ÏOÖÌJKÚ[KÛXÙJKÕ\\Ø\ÙJ
+NÂ[Ý[ÛÞ[ÐYÙJÝ]K\ÙÊHÂÛÛÝ[H	
+Þ[ÐYÙHNÂ[Û\ÜÓ[YHH	ÜÞ[ËXYÙH	È
+ÈÝ]NÂ[[\SHÝ]HOOH	Ø\ÞIÈÈÜ[Û\ÜÏ`class="spinner"></span>${msg}` : msg;
 }
 
-// ââ Constants âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-const PERSON_COLORS = [
-  "#007aff","#34c759","#ff9500","#ff2d55","#af52de",
-  "#5ac8fa","#a2845e","#30b0c7","#ff3b30","#32ade6"
-];
-
-const EV_COLORS = [
-  { name:"Bleu",   hex:"#007aff" },
-  { name:"Vert",   hex:"#34c759" },
-  { name:"Orange", hex:"#ff9500" },
-  { name:"Rose",   hex:"#ff2d55" },
-  { name:"Violet", hex:"#af52de" },
-  { name:"Rouge",  hex:"#ff3b30" },
-  { name:"Cyan",   hex:"#5ac8fa" },
-  { name:"Marron", hex:"#a2845e" },
-];
-
-const DAYS_FR   = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"];
-const MONTHS_FR = ["jan","fÃ©v","mars","avr","mai","juin","juil","aoÃ»t","sep","oct","nov","dÃ©c"];
-
-// ââ State âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-let events   = [];
-let people   = [];
-let absences = [];
-
-let weekStart     = getMonday(new Date());
-let editingEvId   = null;
-let selectedColor = EV_COLORS[0].hex;
-let prefillDate   = null;
-let prefillPerson = null;
-let _saveTimer    = null;
-
-// ââ Helpers âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-const $ = id => document.getElementById(id);
-const pad = n => String(n).padStart(2,"0");
-const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
-const initials = name => name.trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
-
-function syncBadge(state, msg) {
-  const el = $("syncBadge");
-  el.className = 'sync-badge ' + state;
-  el.innerHTML = state === 'busy' ? `<span class="spinner"></span>${msg}` : msg;
-}
-
-// ââ Cloud sync ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Cloud sync &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 async function loadFromCloud() {
   if (!binId) return;
-  syncBadge('busy', 'Chargementâ¦');
+  syncBadge('busy', 'Chargement&#8230;');
   try {
     const rec = await apiRead(binId);
     events   = rec.events   || [];
     people   = rec.people   || [];
     absences = rec.absences || [];
-    syncBadge('ok', 'â En ligne');
+    syncBadge('ok', '&#10003; En ligne');
     renderPlanning();
   } catch(e) {
-    syncBadge('err', 'â Erreur rÃ©seau');
+    syncBadge('err', '&#10007; Erreur r&#233;seau');
   }
 }
 
@@ -631,19 +816,19 @@ function scheduleSave() {
 
 async function pushToCloud() {
   if (!binId) return;
-  syncBadge('busy', 'Sauvegardeâ¦');
+  syncBadge('busy', 'Sauvegarde&#8230;');
   try {
     await apiWrite(binId, { events, people, absences });
-    syncBadge('ok', 'â SauvegardÃ©');
+    syncBadge('ok', '&#10003; Sauvegard&#233;');
   } catch(e) {
-    syncBadge('err', 'â Erreur sauvegarde');
+    syncBadge('err', '&#10007; Erreur sauvegarde');
   }
 }
 
 // Auto-refresh every 30 seconds
 setInterval(loadFromCloud, 30000);
 
-// ââ Data mutations ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Data mutations &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function saveAll() { scheduleSave(); }
 
 function toggleAbsence(personId, date) {
@@ -658,7 +843,7 @@ function isAbsent(personId, date) {
   return absences.some(a => a.personId === personId && a.date === date);
 }
 
-// ââ Date utils ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Date utils &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function getMonday(d) {
   const dt = new Date(d); dt.setHours(0,0,0,0);
   const day = dt.getDay();
@@ -682,11 +867,11 @@ function weekLabel(monday) {
   const days = weekDays(monday);
   const d0 = days[0], d6 = days[6];
   if (d0.getMonth() === d6.getMonth())
-    return `${d0.getDate()} â ${d6.getDate()} ${MONTHS_FR[d0.getMonth()]} ${d0.getFullYear()}`;
-  return `${d0.getDate()} ${MONTHS_FR[d0.getMonth()]} â ${d6.getDate()} ${MONTHS_FR[d6.getMonth()]} ${d6.getFullYear()}`;
+    return `${d0.getDate()} &#8211; ${d6.getDate()} ${MONTHS_FR[d0.getMonth()]} ${d0.getFullYear()}`;
+  return `${d0.getDate()} ${MONTHS_FR[d0.getMonth()]} &#8211; ${d6.getDate()} ${MONTHS_FR[d6.getMonth()]} ${d6.getFullYear()}`;
 }
 
-// ââ Render planning âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Render planning &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function renderPlanning() {
   $("weekLabel").textContent = weekLabel(weekStart);
   const wrap = $("planningWrap");
@@ -694,8 +879,8 @@ function renderPlanning() {
 
   if (people.length === 0) {
     wrap.innerHTML = `<div class="empty-state">
-      <span style="font-size:40px">ð¥</span>
-      <span>Ajoutez des membres via le bouton <strong>Ãquipe</strong></span>
+      <span style="font-size:40px">&#128101;</span>
+      <span>Ajoutez des membres via le bouton <strong>&#201;quipe</strong></span>
     </div>`;
     return;
   }
@@ -751,7 +936,7 @@ function renderPlanning() {
       if (absent) {
         const lbl = document.createElement("div");
         lbl.className = "absence-label";
-        lbl.textContent = "â Absent";
+        lbl.textContent = "&#10005; Absent";
         container.appendChild(lbl);
       }
 
@@ -790,13 +975,13 @@ function renderPlanning() {
   wrap.appendChild(table);
 }
 
-// ââ Navigation ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Navigation &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 $("prevWeek").onclick = () => { weekStart.setDate(weekStart.getDate()-7); renderPlanning(); };
 $("nextWeek").onclick = () => { weekStart.setDate(weekStart.getDate()+7); renderPlanning(); };
 $("todayBtn").onclick = () => { weekStart = getMonday(new Date()); renderPlanning(); };
 $("syncBtn").onclick  = () => loadFromCloud();
 
-// ââ Event modal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Event modal &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function buildColorSwatches() {
   const row = $("colorRow"); row.innerHTML = "";
   EV_COLORS.forEach(c => {
@@ -825,7 +1010,7 @@ function populatePersonSelect(selected) {
 function openEvModal(ev, forceDate) {
   if (people.length === 0) { openPeopleModal(); return; }
   editingEvId = ev ? ev.id : null;
-  $("evModalTitle").textContent = ev ? "Modifier" : "Nouvel Ã©vÃ©nement";
+  $("evModalTitle").textContent = ev ? "Modifier" : "Nouvel &#233;v&#233;nement";
   $("evTitle").value = ev ? ev.title   : "";
   $("evDesc").value  = ev ? (ev.desc||"") : "";
   selectedColor = ev ? ev.color : EV_COLORS[0].hex;
@@ -885,7 +1070,7 @@ $("evSave").onclick = () => {
 
 $("evTitle").addEventListener("keydown", e => { if (e.key === "Enter") $("evSave").click(); });
 
-// ââ People modal ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; People modal &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function renderPeopleList() {
   const list = $("peopleList"); list.innerHTML = "";
   if (people.length === 0) {
@@ -898,7 +1083,7 @@ function renderPeopleList() {
     item.innerHTML = `
       <div class="person-item-avatar" style="background:${p.color}">${initials(p.name)}</div>
       <div class="person-item-name">${p.name}</div>
-      <button class="person-remove" data-id="${p.id}">Ã</button>`;
+      <button class="person-remove" data-id="${p.id}">&#215;</button>`;
     item.querySelector(".person-remove").onclick = () => {
       people = people.filter(x => x.id !== p.id);
       saveAll(); renderPeopleList(); renderPlanning();
@@ -930,9 +1115,9 @@ function addPerson() {
 $("addPersonBtn").onclick = addPerson;
 $("newPersonName").addEventListener("keydown", e => { if (e.key === "Enter") addPerson(); });
 
-// ââ Share modal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Share modal &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 $("shareBtn").onclick = () => {
-  $("shareBinId").textContent = binId || 'â';
+  $("shareBinId").textContent = binId || '&#8212;';
   $("shareOverlay").classList.add("open");
 };
 $("closeShareBtn").onclick = () => $("shareOverlay").classList.remove("open");
@@ -940,24 +1125,24 @@ $("shareOverlay").onclick  = e => { if (e.target === $("shareOverlay")) $("share
 
 $("shareBinId").onclick = () => {
   navigator.clipboard.writeText(binId || '').then(() => {
-    $("shareBinId").textContent = 'â CopiÃ© !';
+    $("shareBinId").textContent = '&#10003; Copi&#233; !';
     setTimeout(() => { $("shareBinId").textContent = binId; }, 1500);
   });
 };
 
 $("resetBtn").onclick = () => {
-  if (confirm("Changer de planning ? Les donnÃ©es actuelles resteront sur le serveur.")) {
+  if (confirm("Changer de planning ? Les donn&#233;es actuelles resteront sur le serveur.")) {
     localStorage.removeItem('cal_bin_id_v1');
     localStorage.removeItem('cal_bin_apikey_v1');
     location.reload();
   }
 };
 
-// ââ Setup modal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Setup modal &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function getSetupKey() {
   const k = $("setupApiKey").value.trim();
   if (!k) {
-    $("setupError").textContent = "Entrez votre clÃ© API JSONBin (Master Key).";
+    $("setupError").textContent = "Entrez votre cl&#233; API JSONBin (Master Key).";
     $("setupError").style.display = "block";
     $("setupApiKey").focus();
     return null;
@@ -968,7 +1153,7 @@ function getSetupKey() {
 $("setupNew").onclick = async () => {
   const k = getSetupKey(); if (!k) return;
   $("setupError").style.display = "none";
-  $("setupNew").innerHTML = '<h3><span class="spinner"></span> CrÃ©ation en coursâ¦</h3>';
+  $("setupNew").innerHTML = '<h3><span class="spinner"></span> Cr&#233;ation en cours&#8230;</h3>';
   apiKey = k;
   try {
     const id = await apiCreateBin();
@@ -976,12 +1161,12 @@ $("setupNew").onclick = async () => {
     localStorage.setItem(BIN_KEY, id);
     localStorage.setItem(BIN_API_KEY, k);
     $("setupOverlay").classList.remove("open");
-    syncBadge('ok', 'â En ligne');
+    syncBadge('ok', '&#10003; En ligne');
     renderPlanning();
   } catch(e) {
     apiKey = null;
-    $("setupNew").innerHTML = '<h3>â¨ CrÃ©er un nouveau planning</h3><p>GÃ©nÃ¨re un planning partagÃ©. Vous obtiendrez un identifiant Ã  partager avec l\'Ã©quipe.</p>';
-    $("setupError").textContent = "Erreur : " + e.message + " â VÃ©rifiez votre clÃ© API.";
+    $("setupNew").innerHTML = '<h3>&#10024; Cr&#233;er un nouveau planning</h3><p>G&#233;n&#232;re un planning partag&#233;. Vous obtiendrez un identifiant &#224; partager avec l\'&#233;quipe.</p>';
+    $("setupError").textContent = "Erreur : " + e.message + " &#8212; V&#233;rifiez votre cl&#233; API.";
     $("setupError").style.display = "block";
   }
 };
@@ -991,7 +1176,7 @@ $("setupJoin").onclick = async () => {
   const id = $("joinId").value.trim();
   if (!id) { $("joinId").focus(); return; }
   $("setupError").style.display = "none";
-  $("setupJoin").textContent = "â¦";
+  $("setupJoin").textContent = "&#8230;";
   apiKey = k;
   try {
     const rec = await apiRead(id);
@@ -1002,24 +1187,24 @@ $("setupJoin").onclick = async () => {
     people   = rec.people   || [];
     absences = rec.absences || [];
     $("setupOverlay").classList.remove("open");
-    syncBadge('ok', 'â En ligne');
+    syncBadge('ok', '&#10003; En ligne');
     renderPlanning();
   } catch(e) {
     apiKey = null;
     $("setupJoin").textContent = "Rejoindre";
-    $("setupError").textContent = "Identifiant invalide, introuvable, ou clÃ© API incorrecte.";
+    $("setupError").textContent = "Identifiant invalide, introuvable, ou cl&#233; API incorrecte.";
     $("setupError").style.display = "block";
   }
 };
 
 $("joinId").addEventListener("keydown", e => { if (e.key === "Enter") $("setupJoin").click(); });
 
-// ââ Init ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; Init &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 if (binId) {
   $("setupOverlay").classList.remove("open");
   loadFromCloud();
 } else {
-  syncBadge('err', 'Non connectÃ©');
+  syncBadge('err', 'Non connect&#233;');
 }
 renderPlanning();
 </script>
