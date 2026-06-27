@@ -416,13 +416,23 @@
 
 <!-- ââ Setup modal ââ -->
 <div class="overlay open" id="setupOverlay">
-  <div class="modal" style="width:380px; gap:16px">
+  <div class="modal" style="width:400px; gap:16px">
     <h2>ð Planning d'Ã©quipe</h2>
-    <p>Choisissez comment dÃ©marrer :</p>
+
+    <div style="background:#fffbe6; border:1px solid #ffe066; border-radius:8px; padding:12px; font-size:12px; color:#7a6200; line-height:1.6">
+      <strong>ClÃ© API JSONBin requise</strong><br>
+      CrÃ©ez un compte gratuit sur <a href="https://jsonbin.io" target="_blank" style="color:var(--accent)">jsonbin.io</a>,
+      puis copiez votre <em>Master Key</em> depuis le tableau de bord â API Keys.
+    </div>
+
+    <div class="field">
+      <label>Votre clÃ© API JSONBin (Master Key)</label>
+      <input type="password" id="setupApiKey" placeholder="$2a$10$â¦" style="font-family:monospace;font-size:12px" />
+    </div>
 
     <div class="setup-option" id="setupNew">
       <h3>â¨ CrÃ©er un nouveau planning</h3>
-      <p>GÃ©nÃ¨re un planning partagÃ© que vous pourrez partager avec votre Ã©quipe.</p>
+      <p>GÃ©nÃ¨re un planning partagÃ©. Vous obtiendrez un identifiant Ã  partager avec l'Ã©quipe.</p>
     </div>
 
     <div style="text-align:center; color:var(--muted); font-size:12px">â ou â</div>
@@ -512,23 +522,34 @@
 <script>
 // ââ JSONBin API âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const API = 'https://api.jsonbin.io/v3';
-const BIN_KEY = 'cal_bin_id_v1';
+const BIN_KEY     = 'cal_bin_id_v1';
+const BIN_API_KEY = 'cal_bin_apikey_v1';
 
-let binId = localStorage.getItem(BIN_KEY) || null;
+let binId  = localStorage.getItem(BIN_KEY)     || null;
+let apiKey = localStorage.getItem(BIN_API_KEY) || null;
+
+function authHeaders(extra = {}) {
+  const h = { 'Content-Type': 'application/json', ...extra };
+  if (apiKey) h['X-Master-Key'] = apiKey;
+  return h;
+}
 
 async function apiCreateBin() {
   const res = await fetch(`${API}/b`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Bin-Name': 'planning-equipe', 'X-Bin-Private': 'false' },
+    headers: authHeaders({ 'X-Bin-Name': 'planning-equipe', 'X-Bin-Private': 'false' }),
     body: JSON.stringify({ events: [], people: [], absences: [] })
   });
-  if (!res.ok) throw new Error('CrÃ©ation Ã©chouÃ©e');
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `Erreur ${res.status}`);
+  }
   const data = await res.json();
   return data.metadata.id;
 }
 
 async function apiRead(id) {
-  const res = await fetch(`${API}/b/${id}/latest`);
+  const res = await fetch(`${API}/b/${id}/latest`, { headers: authHeaders() });
   if (!res.ok) throw new Error('Lecture Ã©chouÃ©e (ID invalide ?)');
   const data = await res.json();
   return data.record;
@@ -537,7 +558,7 @@ async function apiRead(id) {
 async function apiWrite(id, record) {
   const res = await fetch(`${API}/b/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify(record)
   });
   if (!res.ok) throw new Error('Sauvegarde Ã©chouÃ©e');
@@ -927,37 +948,56 @@ $("shareBinId").onclick = () => {
 $("resetBtn").onclick = () => {
   if (confirm("Changer de planning ? Les donnÃ©es actuelles resteront sur le serveur.")) {
     localStorage.removeItem('cal_bin_id_v1');
+    localStorage.removeItem('cal_bin_apikey_v1');
     location.reload();
   }
 };
 
 // ââ Setup modal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function getSetupKey() {
+  const k = $("setupApiKey").value.trim();
+  if (!k) {
+    $("setupError").textContent = "Entrez votre clÃ© API JSONBin (Master Key).";
+    $("setupError").style.display = "block";
+    $("setupApiKey").focus();
+    return null;
+  }
+  return k;
+}
+
 $("setupNew").onclick = async () => {
+  const k = getSetupKey(); if (!k) return;
   $("setupError").style.display = "none";
   $("setupNew").innerHTML = '<h3><span class="spinner"></span> CrÃ©ation en coursâ¦</h3>';
+  apiKey = k;
   try {
     const id = await apiCreateBin();
     binId = id;
     localStorage.setItem(BIN_KEY, id);
+    localStorage.setItem(BIN_API_KEY, k);
     $("setupOverlay").classList.remove("open");
     syncBadge('ok', 'â En ligne');
     renderPlanning();
   } catch(e) {
-    $("setupNew").innerHTML = '<h3>â¨ CrÃ©er un nouveau planning</h3><p>GÃ©nÃ¨re un planning partagÃ© que vous pourrez partager avec votre Ã©quipe.</p>';
-    $("setupError").textContent = "Erreur : " + e.message;
+    apiKey = null;
+    $("setupNew").innerHTML = '<h3>â¨ CrÃ©er un nouveau planning</h3><p>GÃ©nÃ¨re un planning partagÃ©. Vous obtiendrez un identifiant Ã  partager avec l\'Ã©quipe.</p>';
+    $("setupError").textContent = "Erreur : " + e.message + " â VÃ©rifiez votre clÃ© API.";
     $("setupError").style.display = "block";
   }
 };
 
 $("setupJoin").onclick = async () => {
+  const k = getSetupKey(); if (!k) return;
   const id = $("joinId").value.trim();
   if (!id) { $("joinId").focus(); return; }
   $("setupError").style.display = "none";
   $("setupJoin").textContent = "â¦";
+  apiKey = k;
   try {
     const rec = await apiRead(id);
     binId = id;
     localStorage.setItem(BIN_KEY, id);
+    localStorage.setItem(BIN_API_KEY, k);
     events   = rec.events   || [];
     people   = rec.people   || [];
     absences = rec.absences || [];
@@ -965,15 +1005,16 @@ $("setupJoin").onclick = async () => {
     syncBadge('ok', 'â En ligne');
     renderPlanning();
   } catch(e) {
+    apiKey = null;
     $("setupJoin").textContent = "Rejoindre";
-    $("setupError").textContent = "Identifiant invalide ou introuvable.";
+    $("setupError").textContent = "Identifiant invalide, introuvable, ou clÃ© API incorrecte.";
     $("setupError").style.display = "block";
   }
 };
 
 $("joinId").addEventListener("keydown", e => { if (e.key === "Enter") $("setupJoin").click(); });
 
-// ââ Init âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ââ Init ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 if (binId) {
   $("setupOverlay").classList.remove("open");
   loadFromCloud();
